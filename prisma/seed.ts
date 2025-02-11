@@ -26,7 +26,7 @@ async function main() {
       name: `Doctor${i + 1}`,
       lastname: "Lastname",
       password: await bcrypt.hash("password123", saltRounds),
-      role: "doctor",
+      role: "DOCTOR",
       phone: `111222333${i}`,
       especialidad: [
         "Medicina General",

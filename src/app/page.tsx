@@ -20,7 +20,7 @@ export default async function Home() {
   const totalPacientes = await prisma.pacientes.count();
   const totalDoctores = await prisma.users.count({
     where: {
-      role: { in: ["DOCTOR", "MEDICO"] },
+      role: { in: ["doctor", "Medicina General"] },
     },
   });
 
