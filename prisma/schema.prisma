@@ -21,7 +21,7 @@ model users {
   password            String
   role                String
   phone               String
-  especialidad        String
+  especialidad        String?
   address             String
   city                String
   country             String

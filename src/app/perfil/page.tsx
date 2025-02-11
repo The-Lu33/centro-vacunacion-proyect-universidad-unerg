@@ -3,26 +3,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import prisma from "@/utils/conn";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-
-export const data = async () => {
-  const session = await getServerSession(authOptions);
-
-  const userId = session?.user?.id ? Number(session.user.id) : undefined;
-
-  if (userId) {
-    const user = await prisma.users.findUnique({
-      where: {
-        id: userId,
-      },
-    });
-    return { user };
-  }
-  return { user: null };
-};
+import {options} from '@/app/options';
 
 export default async function PerfilPage() {
-  const { user } = await data();
+  const session = await getServerSession(options);
+  const email = session?.user?.email 
+
+  if (!session?.user.email) {
+    return redirect("/login");
+  }
+
+  const user = await prisma.users.findUnique({
+    where: {
+      email,
+    },
+  });
 
   if (!user) {
     return redirect("/login");

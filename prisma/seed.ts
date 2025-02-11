@@ -7,21 +7,21 @@ async function main() {
   const saltRounds = 10; // Adjust salt rounds for security vs. performance
 
   // Create Users (1 admin, 4 doctors, 5 regular users)
-  const users = [
-    {
-      email: "admin@example.com",
-      name: "Admin",
-      lastname: "User",
-      password: await bcrypt.hash("password123", saltRounds), // Hash password
-      role: "admin",
-      phone: "1234567890",
-      especialidad: null, // Admin doesn't need a specialty
-      address: "Admin Address",
-      city: "Admin City",
-      country: "Admin Country",
-    },
-    ...Array.from({ length: 4 }, async (_, i) => ({
-      // Doctors
+  const adminUser = {
+    email: "admin@example.com",
+    name: "Admin",
+    lastname: "User",
+    password: await bcrypt.hash("password123", saltRounds), // Hash password
+    role: "admin",
+    phone: "1234567890",
+    especialidad: null, // Admin doesn't need a specialty
+    address: "Admin Address",
+    city: "Admin City",
+    country: "Admin Country",
+  };
+
+  const doctors = await Promise.all(
+    Array.from({ length: 4 }, async (_, i) => ({
       email: `doctor${i + 1}@example.com`,
       name: `Doctor${i + 1}`,
       lastname: "Lastname",
@@ -37,21 +37,25 @@ async function main() {
       address: `Doctor Address ${i}`,
       city: `Doctor City ${i}`,
       country: "Venezuela",
-    })),
-    ...Array.from({ length: 5 }, async (_, i) => ({
-      // Regular Users
+    }))
+  );
+
+  const regularUsers = await Promise.all(
+    Array.from({ length: 5 }, async (_, i) => ({
       email: `user${i + 1}@example.com`,
       name: `User${i + 1}`,
       lastname: "Lastname",
       password: await bcrypt.hash("password123", saltRounds),
       role: "user",
       phone: `444555666${i}`,
-      especialidad: null,
+      especialidad: "Cirujano",
       address: `User Address ${i}`,
       city: `User City ${i}`,
       country: "Venezuela",
-    })),
-  ];
+    }))
+  );
+
+  const users = [adminUser, ...doctors, ...regularUsers];
 
   await prisma.users.createMany({ data: users });
 
@@ -95,34 +99,24 @@ async function main() {
   await prisma.pacientes.createMany({ data: pacientes });
 
   // Create Registro (Vaccine records - one per patient, random vaccine)
-  const registro = pacientes.map((paciente, i) => ({
+  const createdPacientes = await prisma.pacientes.findMany(); // Fetch created patients
+
+  const registro = createdPacientes.map((paciente, i) => ({
     date: new Date(`2024-01-${(i % 28) + 1}`), // Vary dates
     dosis: ["primera", "segunda", "tercera"][i % 3], // Vary doses
     vacunaId: Math.floor(Math.random() * vacunas.length) + 1, // Random vaccine
     pacienteId: paciente.id, // Use the actual patient ID after creation
   }));
-
-  // The following code is updated to use the actual patient IDs
-  const createdPacientes = await prisma.pacientes.findMany(); // Fetch created patients
-
-  const registroWithIds = createdPacientes.map((paciente, i) => ({
-    date: new Date(`2024-01-${(i % 28) + 1}`),
-    dosis: ["primera", "segunda", "tercera"][i % 3],
-    vacunaId: Math.floor(Math.random() * vacunas.length) + 1,
-    pacienteId: paciente.id,
-  }));
-
-  await prisma.registro.createMany({ data: registroWithIds });
+  await prisma.registro.createMany({ data: registro });
 }
 
 main()
-  .then(() => {
+  .then(async () => {
     console.log("Data seeded.");
-  })
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
     await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
   });

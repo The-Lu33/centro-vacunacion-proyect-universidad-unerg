@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import DropdownMenuItems from "@/components/DropdownMenuItems"
 import { getServerSession } from "next-auth"
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import {options} from '@/app/options';
 
 export default async function Header() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(options);
 
   return (
     <header className="bg-white shadow-md">
@@ -29,7 +29,7 @@ export default async function Header() {
               />
             </div> */}
           </div>
-          {session?.user.id ? (
+          {session?.user.email ? (
           <div className="flex items-center">
             {/* <Button variant="ghost" size="icon" className="mr-2">
               <Bell className="h-5 w-5" />

@@ -1,8 +1,7 @@
 import Link from "next/link"
 import { Home, Syringe, Users, User, UserRoundPlus, Settings } from "lucide-react"
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-
+import {options} from '@/app/options';
 const navItems = [
   { icon: Home, label: "Inicio", href: "/" },
   { icon: Syringe, label: "Registrar Vacuna", href: "/registro" },
@@ -14,14 +13,14 @@ const navItems = [
 ]
 
 export default async function Sidebar() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(options);
 
   return (
     <div className="flex flex-col w-64 bg-white shadow-lg">
       <div className="flex items-center justify-center h-20 shadow-md">
         <h1 className="text-3xl font-bold text-blue-600">VacunaTrack</h1>
       </div>
-      {session?.user.id && (
+      {session?.user.email && (
       <nav className="flex-grow">
         <ul className="flex flex-col py-4">
           {navItems.map((item) => (

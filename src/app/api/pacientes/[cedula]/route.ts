@@ -2,10 +2,10 @@ import prisma from "@/utils/conn";
 
 export async function GET(
   request: Request,
-  { params }: { params: { cedula: string } }
+  { params }: { params: Promise<{ cedula: string }> }
 ) {
   try {
-    const { cedula } = params;
+    const cedula = (await params).cedula;
     console.log(cedula);
     const paciente = await prisma.pacientes.findFirst({
       where: { cedula: parseInt(cedula) },

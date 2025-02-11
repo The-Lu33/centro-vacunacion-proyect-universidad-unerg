@@ -4,8 +4,8 @@ import VaccinationChart from "@/components/VaccinationChart";
 import RecentVaccinations from "@/components/RecentVaccinations";
 import prisma from "@/utils/conn";
 import dayjs from "dayjs";
-// server side props
-export const data = async () => {
+
+export default async function Home() {
   const resentVaccinations = await prisma.registro.findMany({
     take: 5,
     orderBy: {
@@ -65,24 +65,6 @@ export const data = async () => {
       name: monthAbbreviations[item.mes.split(' ')[0]] || item.mes.substring(0, 3),
       vacunas: item.cantidad
     }));
-  return {
-    resentVaccinations,
-    tasaVacunacion,
-    totalVacunas,
-    totalPacientes,
-    totalDoctores,
-    dataChart: registroGroupByDate,
-  };
-};
-export default async function Home() {
-  const { 
-    resentVaccinations,
-    tasaVacunacion,
-    totalVacunas,
-    totalPacientes,
-    totalDoctores,
-    dataChart,
-   } = await data();
   return (
     <div>
       <h1 className="text-3xl font-bold text-gray-800 mb-6">
@@ -141,7 +123,7 @@ export default async function Home() {
         </Card>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <VaccinationChart dataChart={dataChart} />
+        <VaccinationChart dataChart={registroGroupByDate} />
         <RecentVaccinations resentVaccinations={resentVaccinations} />
       </div>
     </div>

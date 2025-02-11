@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/utils/conn";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import {options} from '@/app/options';
 
 export async function POST(req: NextRequest) {
   try {
     // Verify user is authenticated
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(options);
     if (!session) {
       return NextResponse.json(
         {
