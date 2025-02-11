@@ -1,6 +1,6 @@
 import prisma from "@/utils/conn";
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const vacunas = await prisma.vacunas.findMany();
     console.log({ vacunas });

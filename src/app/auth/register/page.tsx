@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { toast, useToast } from "@/hooks/use-toast";
+import {  useToast } from "@/hooks/use-toast";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -61,6 +61,7 @@ export default function RegisterPage() {
         description: "Ocurrió un error inesperado",
         variant: "destructive"
       });
+      console.log(error)
     }
   };
 

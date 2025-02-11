@@ -25,8 +25,8 @@ services:
     command: >
       sh -c "
       bun install &&
-      bun prisma generate
-      prisma db push &&
+      bun prisma generate &&
+      bun run build &&
       bun start
       "
 

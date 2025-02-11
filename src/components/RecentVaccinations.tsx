@@ -19,7 +19,7 @@ export default function RecentVaccinations({ resentVaccinations }: { resentVacci
             </TableRow>
           </TableHeader>
           <TableBody>
-            {resentVaccinations.map((vaccination) => (
+            {resentVaccinations.map((vaccination:any) => (
               <TableRow key={vaccination.id}>
                 <TableCell>{vaccination.pacientes.name} {vaccination.pacientes.lastname}</TableCell>
                 <TableCell>{vaccination.vacunas.name}</TableCell>

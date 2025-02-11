@@ -5,7 +5,7 @@ import { signOut } from "next-auth/react";
 import { useSpinner } from "./ui/spinner-provider";
 
 export default function DropdownMenuItems() {
-  const { show, hide } = useSpinner();
+  const { show } = useSpinner();
   // cerrar session
 
   return (
