@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id                  Int         @id @default(autoincrement())
+  email               String      @unique
+  name                String
+  lastname            String
+  password            String
+  role                String
+  phone               String
+  especialidad        String
+  address             String
+  city                String
+  country             String
+  vacunas             vacunas[]
+  pacientes_vacunados pacientes[]
+}
+
+model vacunas {
+  id        Int         @id @default(autoincrement())
+  name      String      @unique
+  pacientes pacientes[]
+  users     users[]
+  registros registro[]
+}
+
+model pacientes {
+  id            Int        @id @default(autoincrement())
+  name          String
+  lastname      String
+  cedula        Int        @unique
+  email         String     @unique
+  phone         String
+  date_of_birth DateTime   @db.Date()
+  address       String
+  city          String
+  country       String
+  vacunas       vacunas[]
+  users         users[]
+  registros     registro[]
+}
+
+model registro {
+  id         Int       @id @default(autoincrement())
+  date       DateTime  @db.Date
+  dosis      String
+  vacunaId   Int
+  pacienteId Int
+  vacunas    vacunas   @relation(fields: [vacunaId], references: [id])
+  pacientes  pacientes @relation(fields: [pacienteId], references: [id])
+}
